@@ -1,5 +1,7 @@
 #Saksa fra tutorialen her: https://fastapi.tiangolo.com/tutorial/first-steps/
-from fastapi import FastAPI
+from idlelib.query import Query
+
+from fastapi import FastAPI, Query
 from kjoretoy import kjoretoy_tabell
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, literal
@@ -14,21 +16,22 @@ kjoretoy = kjoretoy_tabell()
 engine = create_engine(connstr)
 app = FastAPI()
 
-
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
 
 @app.get("/regdato")
-async def regdato():
+async def regdato(reg_date: str = Query("2022-01-01", description="Registration date in format YYYY-MM-DD")):
     with engine.connect() as conn:
         res = conn.execute(
             kjoretoy.select().with_only_columns(
                 kjoretoy.c.farge_navn,
-                kjoretoy.c.tekn_modell
+                kjoretoy.c.tekn_modell,
+                kjoretoy.c.tekn_sitteplasser_totalt,  # Legg til kolonnen for antall sitteplasser
+                kjoretoy.c.elbil  # Legg til kolonnen for elbil
             ).where(
-                # Dere må endre sånn at ønsket regdato angis som query-parameter i URL
-                kjoretoy.c.tekn_reg_f_g_n == literal("2022-01-01"))
+                kjoretoy.c.tekn_reg_f_g_n == literal(reg_date)
+            )
         )
 
         out_list = []
@@ -36,10 +39,12 @@ async def regdato():
             out = {}
             out["farge"] = r[0]
             out["modell"] = r[1]
+            out["tekn_sitteplasser_totalt"] = r[2]  # Legg til antall sitteplasser i utdataen
+            out["elbil"] = r[3]  # Legg til elbilinformasjon i utdataen
             out_list.append(out)
 
         return out_list
 
 @app.get("/pkkdato")
 async def pkkdato():
-    pass
+    pass  # Placeholder for the implementation
