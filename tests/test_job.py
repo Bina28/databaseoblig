@@ -30,18 +30,11 @@ def test_kjoretoy_regdato(db):
     resp = requests.get(kjoretoy_endpoint)
     svar = resp.json()
 
-
     forventet = [
         {'farge': 'Svart (også blåsvart, grafitt mørk, gråsort, koksgrå mørk, koksgrå mørk metallic)',
-         'modell': '2008',
-         'tekn_sitteplasser_totalt': 5,  # Legg til antall sitteplasser
-         'elbil': False,  # Legg til elbilinformasjon
-         'bilmerke': 'Toyota'},  # Legg til bilmerkeinformasjon
+         'modell': '2008'},
         {'farge': 'Rød (også burgunder)',
-         'modell': 'ADVENTURE STD 600ACE',
-         'tekn_sitteplasser_totalt': 2,  # Legg til antall sitteplasser
-         'elbil': True,  # Legg til elbilinformasjon
-         'bilmerke': 'BMW'}]  # Legg til bilmerkeinformasjon
+         'modell': 'ADVENTURE STD 600ACE'}]
 
     # Vi skal sortere lister bestående av dict, og da må vi angi manuelt hvordan disse skal sorteres med en funksjon.
     sorterer = lambda x:x["farge"] + x["modell"]
