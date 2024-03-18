@@ -1,6 +1,6 @@
 #Saksa fra tutorialen her: https://fastapi.tiangolo.com/tutorial/first-steps/
 from idlelib.query import Query
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Path
 from kjoretoy import kjoretoy_tabell
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, literal
@@ -15,20 +15,21 @@ kjoretoy = kjoretoy_tabell()
 engine = create_engine(connstr)
 app = FastAPI()
 
+
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
 
-@app.get("/regdato")
-async def regdato(reg_date: str = Query("2022-01-01", description="Registration date in format YYYY-MM-DD")):
+
+@app.get("/regdato/{reg_date}")
+async def regdato(reg_date: str = Path(..., description="Registration date in format YYYY-MM-DD")):
     with engine.connect() as conn:
         res = conn.execute(
             kjoretoy.select().with_only_columns(
                 kjoretoy.c.farge_navn,
                 kjoretoy.c.tekn_modell,
-                kjoretoy.c.merke_navn,  # Legger til kolonne for bilmerke
-
-                kjoretoy.c.tekn_drivstoff  # Legger til kolonne for drivstofftype (for å sjekke om det er elbil)
+                kjoretoy.c.merke_navn,
+                kjoretoy.c.tekn_drivstoff
             ).where(
                 kjoretoy.c.tekn_reg_f_g_n == literal(reg_date)
             )
@@ -39,9 +40,8 @@ async def regdato(reg_date: str = Query("2022-01-01", description="Registration 
             out = {}
             out["farge"] = r[0]
             out["modell"] = r[1]
-            out["merke"] = r[2]  # Merke
-
-            out["elbil"] = r[3] == "5"  # Elbil (sjekker om drivstofftypen er 5, som antas å være for elbiler)
+            out["merke"] = r[2]
+            out["elbil"] = r[3] == "5"
             out_list.append(out)
 
         return out_list
