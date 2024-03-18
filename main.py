@@ -25,7 +25,10 @@ async def regdato(reg_date: str = Query("2022-01-01", description="Registration 
         res = conn.execute(
             kjoretoy.select().with_only_columns(
                 kjoretoy.c.farge_navn,
-                kjoretoy.c.tekn_modell
+                kjoretoy.c.tekn_modell,
+                kjoretoy.c.merke_navn,  # Legger til kolonne for bilmerke
+
+                kjoretoy.c.tekn_drivstoff  # Legger til kolonne for drivstofftype (for å sjekke om det er elbil)
             ).where(
                 kjoretoy.c.tekn_reg_f_g_n == literal(reg_date)
             )
@@ -36,6 +39,9 @@ async def regdato(reg_date: str = Query("2022-01-01", description="Registration 
             out = {}
             out["farge"] = r[0]
             out["modell"] = r[1]
+            out["merke"] = r[2]  # Merke
+
+            out["elbil"] = r[3] == "5"  # Elbil (sjekker om drivstofftypen er 5, som antas å være for elbiler)
             out_list.append(out)
 
         return out_list
