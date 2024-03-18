@@ -27,11 +27,15 @@ def db():
 
 def test_kjoretoy_regdato(db):
     # Endret URL for å inkludere datoen som en path-parameter
-    kjoretoy_endpoint = URL + "/regdato/2022-01-02"
+    kjoretoy_endpoint = URL + "/regdato/2022-01-01"
     resp = requests.get(kjoretoy_endpoint)
     svar = resp.json()
 
-    forventet = [{'elbil': False, 'farge': 'Grå', 'merke': 'VOLVO', 'modell': 'FH'}]
+    forventet = [
+        {'farge': 'Svart (også blåsvart, grafitt mørk, gråsort, koksgrå mørk, koksgrå mørk metallic)',
+         'modell': '2008', 'merke': 'PEUGEOT',  'elbil': True},
+        {'farge': 'Rød (også burgunder)',
+         'modell': 'ADVENTURE STD 600ACE', 'merke': 'LYNX',  'elbil': False}]
 
     # Vi skal sortere lister bestående av dict, og da må vi angi manuelt hvordan disse skal sorteres med en funksjon.
     sorterer = lambda x: (x["farge"], x["modell"], x["merke"], x["elbil"])
