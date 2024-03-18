@@ -59,12 +59,10 @@ def test_kjoretoy_pkkdato(db):
 
     assert svar == forventet
 
-    # Print expected values for verification
     print("Expected values:")
     for entry in forventet:
         print(entry)
 
-    # Print actual values for verification
     print("Actual values:")
     for entry in svar:
         print(entry)

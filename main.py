@@ -56,7 +56,7 @@ async def pkkdato(pkk_date: str = Query("2026-01-01",  description="Next EU insp
                         kjoretoy.c.tekn_modell,
                         kjoretoy.c.merke_navn,
                         kjoretoy.c.tekn_drivstoff,
-                        kjoretoy.c.tekn_reg_f_g_n,  # First registration date
+                        kjoretoy.c.tekn_reg_f_g_n,
                         kjoretoy.c.tekn_neste_pkk
                     ).where(
                         kjoretoy.c.tekn_neste_pkk == literal(pkk_date)
@@ -69,9 +69,9 @@ async def pkkdato(pkk_date: str = Query("2026-01-01",  description="Next EU insp
                         "farge": r[0],
                         "modell": r[1],
                         "merke": r[2],
-                        "elbil": r[3] == "5",  # Assuming "5" represents an electric vehicle
-                        "registreringsdato": str(r[4]),  # Convert date to string
-                        "neste_pkk_dato": str(r[5])  # Convert date to string
+                        "elbil": r[3] == "5",
+                        "registreringsdato": str(r[4]),
+                        "neste_pkk_dato": str(r[5])
                     }
                     out_list.append(out)
 
